@@ -55,6 +55,38 @@ app.post('/create_story', (req, res) => {
     }
 })
 
+// Route to `update or create` the story
+app.put('/update_story/:id', (req, res) => {
+    const story_id = parseInt(req.params.id)
+    console.log(req.body);
+    const data = req.body;
+    const index = stories.findIndex((story) => story.id === story_id) || -1;
+    if(index === -1) {
+        res.status(404).json({ error:`Story with ID ${story_id} Not Found`})
+    } else{
+        stories[index] = {...stories[index], ...data}
+        fs.writeFileSync('data.json', JSON.stringify(stories), 'utf8')
+        res.status(200).json({"success": "Story Updated Successfully"})
+    }
+})
+
+// Route to `update` the story
+app.patch('/update_story/:id', (req, res) => {
+    const story_id = parseInt(req.params.id)
+    console.log(req.body);
+    const data = req.body;
+    const index = stories.findIndex((story) => story.id === story_id) || -1;
+    if(index === -1) {
+        res.status(404).json({ error:`Story with ID ${story_id} Not Found`})
+    } else{
+        stories[index] = {...stories[index], ...data}
+
+        fs.writeFileSync('data.json', JSON.stringify(stories), 'utf8')
+        res.status(200).json({"success": "Story Updated Successfully"})
+    }
+})
+
+
 
 // Listening to the PORT on which server is running
 app.listen(port, ()=>{
