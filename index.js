@@ -37,14 +37,21 @@ app.get('/story/:id', (req,res)=> {
 app.post('/create_story', (req, res) => {
     console.log(req.body);
     const story = req.body;
-    if(story && story.title){
-        story.id = Math.random(1 * story.body.length);
-        stories.push(story);
-
-        fs.writeFileSync('data.json', JSON.stringify(stories), 'utf8');
-        res.status(201).json({message: 'story added successfully'});
+    if(story){
+        if(story.title){
+            if(story.body){
+                story.id = Math.floor(Math.random()*1000 + story.title.length);
+                stories.push(story);
+                fs.writeFileSync('data.json', JSON.stringify(stories), 'utf8');
+                res.status(201).json({story});
+            }else{
+                res.status(500).json({message: 'Body of the story not found'});
+            }
+        }else{
+            res.status(500).json({message: 'Title not found'});
+        }
     }else {
-        res.status(500).json({message: 'Error while creating'});
+        res.status(500).json({message: 'Error while creating story'});
     }
 })
 
